@@ -12,9 +12,9 @@ const products = [
   { id: 7, name: "Refrigerator", category: "Appliances", price: 699, deposit: 1200, image: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400", available: true },
   { id: 8, name: "Washing Machine", category: "Appliances", price: 599, deposit: 1000, image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=400", available: true },
   { id: 9, name: "Smart TV 43 inch", category: "Appliances", price: 799, deposit: 1500, image: "https://images.unsplash.com/photo-1461151304267-38535e780c79?w=400", available: false },
-  { id: 10, name: "Air Conditioner", category: "Appliances", price: 899, deposit: 1800, image: "https://images.unsplash.com/photo-1631567091196-4b3e2b26e29d?w=400", available: true },
+  { id: 10, name: "Air Conditioner", category: "Appliances", price: 899, deposit: 1800, image: "https://png.pngtree.com/thumb_back/fh260/background/20250525/pngtree-a-white-air-conditioner-with-digital-display-image_17336786.jpg", available: true },
   { id: 11, name: "Microwave", category: "Appliances", price: 349, deposit: 600, image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=400", available: true },
-  { id: 12, name: "Water Purifier", category: "Appliances", price: 299, deposit: 500, image: "https://images.unsplash.com/photo-1584515933487-779824d29309?w=400", available: true },
+  { id: 12, name: "Water Purifier", category: "Appliances", price: 299, deposit: 500, image: "https://img.freepik.com/premium-photo/water-purifier-with-white-background-high-quality-u_889056-17871.jpg", available: true },
 ];
 
 function Products() {

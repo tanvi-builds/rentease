@@ -11,7 +11,7 @@ const products = [
   { id: 7, name: "Refrigerator", price: 699, deposit: 1200, image: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400" },
   { id: 8, name: "Washing Machine", price: 599, deposit: 1000, image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=400" },
   { id: 9, name: "Smart TV 43 inch", price: 799, deposit: 1500, image: "https://images.unsplash.com/photo-1461151304267-38535e780c79?w=400" },
-  { id: 10, name: "Air Conditioner", price: 899, deposit: 1800, image: "https://images.unsplash.com/photo-1631567091196-4b3e2b26e29d?w=400" },
+  { id: 10, name: "Air Conditioner", price: 899, deposit: 1800, image: "https://png.pngtree.com/thumb_back/fh260/background/20250525/pngtree-a-white-air-conditioner-with-digital-display-image_17336786.jpg" },
   { id: 11, name: "Microwave", price: 349, deposit: 600, image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?w=400" },
   { id: 12, name: "Water Purifier", price: 299, deposit: 500, image: "https://images.unsplash.com/photo-1584515933487-779824d29309?w=400" },
 ];
