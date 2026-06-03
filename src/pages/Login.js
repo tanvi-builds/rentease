@@ -1,20 +1,42 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('Login Successful! Welcome to RentEase!');
+  const handleSubmit = async () => {
+    if (!email || !password) {
+      setError('Please fill all fields!');
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        navigate('/');
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      setError('Something went wrong!');
+    }
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl p-10 w-full max-w-md">
-        
-        {/* Logo */}
         <h2 className="text-3xl font-heading font-bold text-primary text-center mb-2">
           Welcome Back! 👋
         </h2>
@@ -22,7 +44,8 @@ function Login() {
           Login to your RentEase account
         </p>
 
-        {/* Form */}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
         <div className="flex flex-col gap-5">
           <div>
             <label className="block text-dark font-semibold mb-2">Email</label>
@@ -48,9 +71,10 @@ function Login() {
 
           <button
             onClick={handleSubmit}
+            disabled={loading}
             className="bg-primary text-white py-3 rounded-lg font-heading font-bold text-lg hover:opacity-90 transition"
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </div>
 
