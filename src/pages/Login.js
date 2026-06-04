@@ -15,7 +15,7 @@ function Login() {
     }
     setLoading(true);
     try {
-      const response = await fetch('https://rentease-0pao.onrender.com', {
+     const response = await fetch('https://rentease-0pao.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
