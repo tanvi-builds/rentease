@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Navbar, { BottomNav } from './components/Navbar';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import Login from './pages/Login';
@@ -29,6 +29,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
+        <BottomNav />
       </div>
     </Router>
   );
