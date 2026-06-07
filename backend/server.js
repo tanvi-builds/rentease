@@ -9,10 +9,18 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://rentease-anta.vercel.app'],
+  origin: function (origin, callback) {
+    if (!origin || origin.includes('vercel.app') || origin.includes('localhost')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
+
 app.use(express.json());
+
 // Routes
 app.get('/', (req, res) => {
   res.json({ message: 'RentEase Backend Running! 🚀' });
