@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+
+const API_URL = 'https://rentease-0pao.onrender.com';
 
 function Checkout() {
   const { cart, totalAmount, clearCart } = useCart();
@@ -9,6 +11,8 @@ function Checkout() {
   const [address, setAddress] = useState('');
   const [date, setDate] = useState('');
   const [ordered, setOrdered] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   if (cart.length === 0 && !ordered) {
     return (
@@ -24,13 +28,63 @@ function Checkout() {
     );
   }
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     if (!name || !phone || !address || !date) {
       alert('Please fill all details!');
       return;
     }
-    clearCart();
-    setOrdered(true);
+
+    const token = localStorage.getItem('rentease_token');
+    if (!token) {
+      alert('Please login first!');
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_URL}/api/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          items: cart.map(item => ({
+            productId: item.id,
+            name: item.name,
+            image: item.image,
+            pricePerMonth: item.price,
+            tenure: item.tenure,
+            quantity: item.quantity || 1
+          })),
+          totalAmount,
+          address: {
+            fullName: name,
+            phone: phone,
+            street: address,
+            city: '',
+            state: '',
+            pincode: ''
+          },
+          paymentMethod: 'cod'
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        clearCart();
+        setOrdered(true);
+      } else {
+        alert('Order failed: ' + data.message);
+      }
+    } catch (err) {
+      alert('Network error. Please try again!');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (ordered) {
@@ -124,9 +178,10 @@ function Checkout() {
             </div>
             <button
               onClick={handleOrder}
+              disabled={loading}
               className="w-full bg-accent text-white py-3 rounded-lg font-heading font-bold text-lg hover:opacity-90 transition"
             >
-              Place Order 🎉
+              {loading ? 'Placing Order...' : 'Place Order 🎉'}
             </button>
           </div>
         </div>
