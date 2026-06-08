@@ -13,7 +13,7 @@ function Dashboard() {
     const token = localStorage.getItem('rentease_token');
     if (!token) { navigate('/login'); return; }
     fetchOrders(token);
-  }, []);
+  }, [navigate]);
 
   const fetchOrders = async (token) => {
     try {

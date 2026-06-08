@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function Home() {
-  const user = JSON.parse(localStorage.getItem('rentease_user'));
 
   return (
     <div style={{ paddingBottom: '70px', background: '#0A0F1E' }}>
@@ -93,7 +92,6 @@ function Home() {
               borderRadius: '20px',
               padding: '32px 22px', textAlign: 'center',
               border: '1.5px solid rgba(59,130,246,0.15)',
-              transition: 'border-color 0.2s',
             }}>
               <div style={{ fontSize: '36px', marginBottom: '14px' }}>{item.icon}</div>
               <h3 style={{ color: '#fff', fontWeight: 700, fontSize: '17px', marginBottom: '8px' }}>{item.title}</h3>

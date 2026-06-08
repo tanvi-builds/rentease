@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
@@ -6,7 +6,7 @@ function Navbar() {
   const { cart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
-  const user = JSON.parse(localStorage.getItem('rentease_user')); // ✅ FIXED
+  const user = JSON.parse(localStorage.getItem('rentease_user'));
 
   const handleLogout = () => {
     localStorage.removeItem('rentease_token');
@@ -34,7 +34,6 @@ function Navbar() {
         padding: '0 1.5rem', height: '64px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between'
       }}>
-
         <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{
             background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
@@ -148,7 +147,7 @@ function Navbar() {
 export function BottomNav() {
   const location = useLocation();
   const { cart } = useCart();
-  const user = JSON.parse(localStorage.getItem('rentease_user')); // ✅ FIXED
+  const user = JSON.parse(localStorage.getItem('rentease_user'));
   const isActive = (path) => location.pathname === path;
 
   const items = [
