@@ -16,6 +16,20 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+// Admin middleware
+const adminMiddleware = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'No token' });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.role !== 'admin') return res.status(403).json({ message: 'Admin only' });
+    req.user = decoded;
+    next();
+  } catch {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
 // POST /api/orders - Place order
 router.post('/', authMiddleware, async (req, res) => {
   try {
@@ -35,6 +49,32 @@ router.get('/my', authMiddleware, async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.userId }).sort({ createdAt: -1 });
     res.json({ success: true, orders });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/orders/all - Admin: sagle orders 👇
+router.get('/all', adminMiddleware, async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate('user', 'name email phone')
+      .sort({ createdAt: -1 });
+    res.json({ success: true, orders });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PUT /api/orders/:id/status - Admin: status update 👇
+router.put('/:id/status', adminMiddleware, async (req, res) => {
+  try {
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status: req.body.status },
+      { new: true }
+    );
+    res.json({ success: true, order });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

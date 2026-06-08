@@ -32,6 +32,10 @@ app.use('/api/auth', authRoutes);
 const orderRoutes = require('./routes/orders');
 app.use('/api/orders', orderRoutes);
 
+// New 👇
+const userRoutes = require('./routes/users');
+app.use('/api/users', userRoutes);
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 5000,
