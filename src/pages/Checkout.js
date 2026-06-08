@@ -63,7 +63,7 @@ function Checkout() {
       }
 
       const options = {
-        key: 'rzp_test_1DP5mmOlF5G5ag',
+        key: 'rzp_test_SzDAl4ZbI6Jky2',
         amount: orderData.order.amount,
         currency: 'INR',
         name: 'RentEase',
