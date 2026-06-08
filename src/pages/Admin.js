@@ -279,7 +279,7 @@ function Admin() {
             ) : orders.length === 0 ? (
               <div style={{ padding: '60px', textAlign: 'center' }}>
                 <div style={{ fontSize: '36px', marginBottom: '14px' }}>📭</div>
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>Kahi orders nahi abhi tak</p>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>No users found</p>
               </div>
             ) : (
               <div style={{ overflowX: 'auto' }}>
@@ -367,7 +367,7 @@ function Admin() {
             {users.length === 0 ? (
               <div style={{ padding: '60px', textAlign: 'center' }}>
                 <div style={{ fontSize: '36px', marginBottom: '14px' }}>👥</div>
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>Kahi users nahi abhi tak</p>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>No users found</p>
               </div>
             ) : (
               <div style={{ overflowX: 'auto' }}>
@@ -498,7 +498,7 @@ function Admin() {
             ) : userOrders.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px' }}>
                 <div style={{ fontSize: '28px', marginBottom: '10px' }}>📭</div>
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px' }}>Kahi orders nahi yet</p>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px' }}> No orders found yet</p>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
