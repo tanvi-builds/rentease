@@ -32,9 +32,11 @@ app.use('/api/auth', authRoutes);
 const orderRoutes = require('./routes/orders');
 app.use('/api/orders', orderRoutes);
 
-// New 👇
 const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
+
+const paymentRoutes = require('./routes/payment');
+app.use('/api/payment', paymentRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {

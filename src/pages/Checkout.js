@@ -14,6 +14,124 @@ function Checkout() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePayment = async () => {
+    if (!name || !phone || !address || !date) {
+      alert('Please fill all details!');
+      return;
+    }
+    const token = localStorage.getItem('rentease_token');
+    if (!token) {
+      alert('Please login first!');
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
+
+    const res = await loadRazorpay();
+    if (!res) {
+      alert('Razorpay failed to load!');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const orderRes = await fetch(`${API_URL}/api/payment/create-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ amount: totalAmount })
+      });
+      const orderData = await orderRes.json();
+
+      if (!orderData.success) {
+        alert('Payment initiation failed!');
+        setLoading(false);
+        return;
+      }
+
+      const options = {
+        key: 'rzp_test_1DP5mmOlF5G5ag',
+        amount: orderData.order.amount,
+        currency: 'INR',
+        name: 'RentEase',
+        description: 'Furniture Rental Payment',
+        order_id: orderData.order.id,
+        handler: async function (response) {
+          try {
+            const saveRes = await fetch(`${API_URL}/api/orders`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                items: cart.map(item => ({
+                  productId: item.id,
+                  name: item.name,
+                  image: item.image,
+                  pricePerMonth: item.price,
+                  tenure: item.tenure,
+                  quantity: item.quantity || 1
+                })),
+                totalAmount,
+                address: {
+                  fullName: name,
+                  phone,
+                  street: address,
+                  city: '',
+                  state: '',
+                  pincode: ''
+                },
+                paymentMethod: 'razorpay',
+                paymentId: response.razorpay_payment_id
+              })
+            });
+            const saveData = await saveRes.json();
+            if (saveData.success) {
+              clearCart();
+              setOrdered(true);
+            } else {
+              alert('Order saving failed: ' + saveData.message);
+            }
+          } catch (err) {
+            alert('Order saving error!');
+          }
+        },
+        prefill: {
+          name: name,
+          contact: phone
+        },
+        theme: { color: '#3B82F6' },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+          }
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+      setLoading(false);
+
+    } catch (err) {
+      alert('Network error. Please try again!');
+      setLoading(false);
+    }
+  };
+
   if (cart.length === 0 && !ordered) {
     return (
       <div style={{
@@ -34,53 +152,6 @@ function Checkout() {
       </div>
     );
   }
-
-  const handleOrder = async () => {
-    if (!name || !phone || !address || !date) {
-      alert('Please fill all details!');
-      return;
-    }
-    const token = localStorage.getItem('rentease_token');
-    if (!token) {
-      alert('Please login first!');
-      navigate('/login');
-      return;
-    }
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/api/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          items: cart.map(item => ({
-            productId: item.id,
-            name: item.name,
-            image: item.image,
-            pricePerMonth: item.price,
-            tenure: item.tenure,
-            quantity: item.quantity || 1
-          })),
-          totalAmount,
-          address: { fullName: name, phone, street: address, city: '', state: '', pincode: '' },
-          paymentMethod: 'cod'
-        })
-      });
-      const data = await response.json();
-      if (data.success) {
-        clearCart();
-        setOrdered(true);
-      } else {
-        alert('Order failed: ' + data.message);
-      }
-    } catch (err) {
-      alert('Network error. Please try again!');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (ordered) {
     return (
@@ -243,7 +314,7 @@ function Checkout() {
               <span style={{ fontWeight: 800, color: '#60A5FA', fontSize: '22px' }}>₹{totalAmount}</span>
             </div>
             <button
-              onClick={handleOrder}
+              onClick={handlePayment}
               disabled={loading}
               style={{
                 width: '100%',
@@ -255,7 +326,7 @@ function Checkout() {
                 transition: 'all 0.2s'
               }}
             >
-              {loading ? 'Placing Order...' : 'Place Order 🎉'}
+              {loading ? 'Processing...' : 'Pay Now 💳'}
             </button>
           </div>
         </div>
