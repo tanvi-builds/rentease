@@ -155,6 +155,7 @@ export function BottomNav() {
     { to: '/products', icon: '🛋️', label: 'Products' },
     { to: '/cart', icon: '🛒', label: 'Cart', badge: cart.length },
     { to: user ? '/dashboard' : '/login', icon: '👤', label: 'Account', activePath: '/dashboard' },
+    ...(user?.role === 'admin' ? [{ to: '/admin', icon: '⚙️', label: 'Admin' }] : []),
   ];
 
   return (
