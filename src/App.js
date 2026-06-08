@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar, { BottomNav } from './components/Navbar';
 import Home from './pages/Home';
 import Products from './pages/Products';
@@ -11,6 +11,13 @@ import Dashboard from './pages/Dashboard';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Admin from './pages/Admin';
+
+function AdminRoute({ children }) {
+  const user = JSON.parse(localStorage.getItem('rentease_user'));
+  if (!user) return <Navigate to="/login" />;
+  if (user.role !== 'admin') return <Navigate to="/" />;
+  return children;
+}
 
 function App() {
   return (
@@ -27,7 +34,11 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
+          } />
         </Routes>
         <BottomNav />
       </div>

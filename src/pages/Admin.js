@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const API_URL = 'https://rentease-0pao.onrender.com';
 
 const initialProducts = [
   { id: 1, name: "3-Seater Sofa", category: "Furniture", price: 599, deposit: 1000, available: true },
@@ -15,25 +17,77 @@ const initialProducts = [
   { id: 12, name: "Water Purifier", category: "Appliances", price: 299, deposit: 500, available: true },
 ];
 
-const orders = [
-  { id: 1, user: "Tanvi Sonar", product: "King Size Bed", tenure: 1, total: 2299, status: "Active", date: "2026-06-03" },
-  { id: 2, user: "Rahul Sharma", product: "Refrigerator", tenure: 3, total: 3297, status: "Active", date: "2026-05-20" },
-  { id: 3, user: "Priya Patil", product: "3-Seater Sofa", tenure: 6, total: 4594, status: "Completed", date: "2026-04-01" },
-];
+const STATUS_OPTIONS = ['pending', 'confirmed', 'dispatched', 'delivered', 'cancelled'];
+
+const statusStyle = {
+  pending:    { bg: 'rgba(59,130,246,0.15)',  color: '#60A5FA'  },
+  confirmed:  { bg: 'rgba(37,99,235,0.15)',   color: '#93C5FD'  },
+  dispatched: { bg: 'rgba(16,185,129,0.15)',  color: '#34D399'  },
+  delivered:  { bg: 'rgba(5,150,105,0.15)',   color: '#6EE7B7'  },
+  cancelled:  { bg: 'rgba(239,68,68,0.15)',   color: '#FCA5A5'  },
+};
 
 function Admin() {
   const [products, setProducts] = useState(initialProducts);
   const [activeTab, setActiveTab] = useState("products");
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState(null);
+
+  useEffect(() => {
+    fetchAllOrders();
+  }, []);
+
+  const fetchAllOrders = async () => {
+    try {
+      const token = localStorage.getItem('rentease_token');
+      const res = await fetch(`${API_URL}/api/orders/all`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) setOrders(data.orders);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateStatus = async (orderId, newStatus) => {
+    setUpdatingId(orderId);
+    try {
+      const token = localStorage.getItem('rentease_token');
+      const res = await fetch(`${API_URL}/api/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOrders(orders.map(o => o._id === orderId ? { ...o, status: newStatus } : o));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   const toggleAvailability = (id) => {
     setProducts(products.map(p => p.id === id ? { ...p, available: !p.available } : p));
   };
 
+  const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  const uniqueUsers = new Set(orders.map(o => o.user?._id)).size;
+
   const stats = [
-    { icon: '📦', label: 'Total Products', value: '12', accent: '#3B82F6' },
-    { icon: '✅', label: 'Total Orders', value: '3', accent: '#10B981' },
-    { icon: '👥', label: 'Total Users', value: '3', accent: '#8B5CF6' },
-    { icon: '💰', label: 'Total Revenue', value: '₹10,190', accent: '#F59E0B' },
+    { icon: '📦', label: 'Total Products', value: initialProducts.length, accent: '#3B82F6' },
+    { icon: '🧾', label: 'Total Orders',   value: orders.length,          accent: '#10B981' },
+    { icon: '👥', label: 'Total Users',    value: uniqueUsers,             accent: '#8B5CF6' },
+    { icon: '💰', label: 'Total Revenue',  value: `₹${totalRevenue.toLocaleString()}`, accent: '#F59E0B' },
   ];
 
   const thStyle = {
@@ -173,45 +227,89 @@ function Admin() {
             border: '1px solid rgba(255,255,255,0.08)',
             borderRadius: '20px', overflow: 'hidden'
           }}>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ background: 'rgba(59,130,246,0.08)' }}>
-                    <th style={thStyle}>User</th>
-                    <th style={thStyle}>Product</th>
-                    <th style={thStyle}>Tenure</th>
-                    <th style={thStyle}>Total</th>
-                    <th style={thStyle}>Date</th>
-                    <th style={thStyle}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map(order => (
-                    <tr key={order.id}
-                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <td style={{ ...tdStyle, color: '#fff', fontWeight: 600 }}>{order.user}</td>
-                      <td style={tdStyle}>{order.product}</td>
-                      <td style={tdStyle}>{order.tenure} month(s)</td>
-                      <td style={{ ...tdStyle, color: '#60A5FA', fontWeight: 700 }}>₹{order.total}</td>
-                      <td style={tdStyle}>{order.date}</td>
-                      <td style={tdStyle}>
-                        <span style={{
-                          padding: '4px 12px', borderRadius: '20px',
-                          fontSize: '12px', fontWeight: 600,
-                          background: order.status === 'Active' ? 'rgba(16,185,129,0.15)' : 'rgba(100,116,139,0.15)',
-                          color: order.status === 'Active' ? '#34D399' : '#94A3B8',
-                          border: `1px solid ${order.status === 'Active' ? 'rgba(16,185,129,0.3)' : 'rgba(100,116,139,0.3)'}`
-                        }}>
-                          {order.status}
-                        </span>
-                      </td>
+            {loading ? (
+              <div style={{ padding: '60px', textAlign: 'center' }}>
+                <div style={{ fontSize: '36px', marginBottom: '14px' }}>⏳</div>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>Loading orders...</p>
+              </div>
+            ) : orders.length === 0 ? (
+              <div style={{ padding: '60px', textAlign: 'center' }}>
+                <div style={{ fontSize: '36px', marginBottom: '14px' }}>📭</div>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>Kahi orders nahi abhi tak</p>
+              </div>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ background: 'rgba(59,130,246,0.08)' }}>
+                      <th style={thStyle}>Order ID</th>
+                      <th style={thStyle}>Customer</th>
+                      <th style={thStyle}>Items</th>
+                      <th style={thStyle}>Total</th>
+                      <th style={thStyle}>Date</th>
+                      <th style={thStyle}>Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {orders.map((order, idx) => {
+                      const s = statusStyle[order.status] || statusStyle.pending;
+                      return (
+                        <tr key={order._id}
+                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                        >
+                          <td style={{ ...tdStyle, color: '#fff', fontWeight: 700, fontSize: '13px' }}>
+                            #{order._id.slice(-6).toUpperCase()}
+                          </td>
+                          <td style={tdStyle}>
+                            <div style={{ color: '#fff', fontWeight: 600 }}>{order.user?.name || 'N/A'}</div>
+                            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)' }}>{order.user?.email}</div>
+                          </td>
+                          <td style={{ ...tdStyle, maxWidth: '180px' }}>
+                            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px' }}>
+                              {order.items?.map(i => i.name).join(', ')}
+                            </div>
+                          </td>
+                          <td style={{ ...tdStyle, color: '#60A5FA', fontWeight: 700 }}>
+                            ₹{order.totalAmount?.toLocaleString()}
+                          </td>
+                          <td style={{ ...tdStyle, fontSize: '13px' }}>
+                            {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </td>
+                          <td style={tdStyle}>
+                            <select
+                              value={order.status}
+                              disabled={updatingId === order._id}
+                              onChange={(e) => updateStatus(order._id, e.target.value)}
+                              style={{
+                                background: s.bg,
+                                color: s.color,
+                                border: `1px solid ${s.color}50`,
+                                borderRadius: '8px',
+                                padding: '5px 10px',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                outline: 'none'
+                              }}
+                            >
+                              {STATUS_OPTIONS.map(opt => (
+                                <option key={opt} value={opt} style={{ background: '#0F172A', color: '#fff' }}>
+                                  {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                                </option>
+                              ))}
+                            </select>
+                            {updatingId === order._id && (
+                              <span style={{ fontSize: '11px', color: '#60A5FA', marginLeft: '8px' }}>saving...</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
       </div>
