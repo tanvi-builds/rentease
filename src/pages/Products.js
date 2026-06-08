@@ -24,56 +24,147 @@ function Products() {
   const filtered = filter === "All" ? products : products.filter(p => p.category === filter);
 
   return (
-    <div className="py-12 px-6 max-w-6xl mx-auto">
-      <h1 className="text-4xl font-heading font-bold text-primary text-center mb-8">
-        Our Products
-      </h1>
+    <div style={{ background: '#0A0F1E', minHeight: '100vh', paddingBottom: '80px' }}>
 
-      {/* Filter Buttons */}
-      <div className="flex justify-center gap-4 mb-10">
-        {["All", "Furniture", "Appliances"].map(cat => (
-          <button
-            key={cat}
-            onClick={() => setFilter(cat)}
-            className={`px-6 py-2 rounded-full font-semibold transition ${
-              filter === cat ? "bg-primary text-white" : "bg-white text-primary border border-primary hover:bg-primary hover:text-white"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+      {/* Header */}
+      <div style={{
+        background: 'linear-gradient(135deg, #0F172A 0%, #0A0F1E 100%)',
+        padding: '50px 24px 40px', textAlign: 'center',
+        borderBottom: '1px solid rgba(59,130,246,0.1)'
+      }}>
+        <h1 style={{ fontSize: 'clamp(28px, 5vw, 42px)', fontWeight: 900, color: '#fff', marginBottom: '8px', letterSpacing: '-1px' }}>
+          Our Products
+        </h1>
+        <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '15px' }}>
+          Choose from our wide range of furniture & appliances
+        </p>
       </div>
 
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {filtered.map(product => (
-          <div key={product.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-6">
-              <h3 className="text-xl font-heading font-bold text-primary mb-1">{product.name}</h3>
-              <p className="text-gray-500 font-body mb-4">{product.category}</p>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-accent font-bold text-lg">₹{product.price}/month</span>
-                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${product.available ? "bg-green-100 text-green-600" : "bg-red-100 text-red-500"}`}>
-                  {product.available ? "Available" : "Unavailable"}
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
+
+        {/* Filter */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', padding: '32px 0 28px', flexWrap: 'wrap' }}>
+          {["All", "Furniture", "Appliances"].map(cat => (
+            <button
+              key={cat}
+              onClick={() => setFilter(cat)}
+              style={{
+                padding: '10px 28px',
+                borderRadius: '50px',
+                fontWeight: 600,
+                fontSize: '14px',
+                cursor: 'pointer',
+                border: '1.5px solid',
+                transition: 'all 0.2s',
+                borderColor: filter === cat ? '#3B82F6' : 'rgba(59,130,246,0.2)',
+                background: filter === cat ? '#3B82F6' : 'rgba(59,130,246,0.05)',
+                color: filter === cat ? '#fff' : '#94A3B8',
+                boxShadow: filter === cat ? '0 4px 16px rgba(59,130,246,0.3)' : 'none'
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Products Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
+          {filtered.map(product => (
+            <div key={product.id} style={{
+              background: '#0F172A',
+              borderRadius: '20px',
+              overflow: 'hidden',
+              border: '1px solid rgba(59,130,246,0.12)',
+              transition: 'transform 0.2s, box-shadow 0.2s, border-color 0.2s'
+            }}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(59,130,246,0.15)';
+                e.currentTarget.style.borderColor = 'rgba(59,130,246,0.35)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.borderColor = 'rgba(59,130,246,0.12)';
+              }}
+            >
+              {/* Image */}
+              <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+                <span style={{
+                  position: 'absolute', top: '12px', right: '12px',
+                  padding: '4px 12px', borderRadius: '20px',
+                  fontSize: '12px', fontWeight: 600,
+                  background: product.available ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
+                  color: product.available ? '#4ADE80' : '#F87171',
+                  border: `1px solid ${product.available ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}`
+                }}>
+                  {product.available ? 'Available' : 'Unavailable'}
                 </span>
               </div>
-              <button
-                onClick={() => addToCart(product)}
-                className="block w-full bg-accent text-white text-center py-2 rounded-lg hover:opacity-90 transition font-semibold mb-2"
-              >
-                Add to Cart 🛒
-              </button>
-              <Link to={`/products/${product.id}`} className="block bg-primary text-white text-center py-2 rounded-lg hover:opacity-90 transition font-semibold">
-                View Details
-              </Link>
+
+              {/* Content */}
+              <div style={{ padding: '20px' }}>
+                <div style={{ marginBottom: '4px' }}>
+                  <span style={{
+                    fontSize: '12px', color: '#93C5FD', fontWeight: 600,
+                    background: 'rgba(59,130,246,0.1)',
+                    border: '1px solid rgba(59,130,246,0.2)',
+                    padding: '3px 10px', borderRadius: '20px'
+                  }}>
+                    {product.category}
+                  </span>
+                </div>
+                <h3 style={{ color: '#fff', fontWeight: 700, fontSize: '18px', margin: '10px 0 4px', letterSpacing: '-0.3px' }}>
+                  {product.name}
+                </h3>
+                <p style={{ color: '#3B82F6', fontWeight: 800, fontSize: '20px', margin: '8px 0 4px' }}>
+                  ₹{product.price}<span style={{ fontSize: '14px', fontWeight: 500, color: '#475569' }}>/month</span>
+                </p>
+                <p style={{ color: '#475569', fontSize: '12px', marginBottom: '16px' }}>
+                  + ₹{product.deposit} refundable deposit
+                </p>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    onClick={() => addToCart(product)}
+                    disabled={!product.available}
+                    style={{
+                      flex: 1, padding: '10px',
+                      background: product.available ? '#3B82F6' : 'rgba(59,130,246,0.08)',
+                      color: product.available ? '#fff' : '#475569',
+                      border: 'none', borderRadius: '10px',
+                      fontWeight: 600, fontSize: '14px',
+                      cursor: product.available ? 'pointer' : 'not-allowed',
+                      boxShadow: product.available ? '0 4px 12px rgba(59,130,246,0.3)' : 'none'
+                    }}
+                  >
+                    Add to Cart 🛒
+                  </button>
+                  <Link
+                    to={`/products/${product.id}`}
+                    style={{
+                      flex: 1, padding: '10px',
+                      background: 'rgba(59,130,246,0.08)',
+                      color: '#93C5FD',
+                      border: '1px solid rgba(59,130,246,0.2)',
+                      borderRadius: '10px',
+                      fontWeight: 600, fontSize: '14px',
+                      textDecoration: 'none', textAlign: 'center',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}
+                  >
+                    View Details
+                  </Link>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

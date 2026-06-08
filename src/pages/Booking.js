@@ -26,9 +26,15 @@ function Booking() {
 
   if (!product) {
     return (
-      <div className="text-center py-20">
-        <h2 className="text-3xl font-heading text-primary">Product not found!</h2>
-        <Link to="/products" className="text-accent font-semibold mt-4 inline-block">Back to Products</Link>
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0A0F1E 0%, #0F172A 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#fff', marginBottom: '16px' }}>Product not found!</h2>
+          <Link to="/products" style={{ color: '#60A5FA', fontWeight: 600, textDecoration: 'none' }}>Back to Products</Link>
+        </div>
       </div>
     );
   }
@@ -45,12 +51,36 @@ function Booking() {
 
   if (booked) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl shadow-xl p-10 text-center max-w-md">
-          <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-3xl font-heading font-bold text-primary mb-2">Booking Confirmed!</h2>
-          <p className="text-gray-500 font-body mb-6">Your {product.name} will be delivered on {date}!</p>
-          <Link to="/dashboard" className="bg-primary text-white px-8 py-3 rounded-lg font-heading font-bold hover:opacity-90 transition">
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0A0F1E 0%, #0F172A 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px'
+      }}>
+        <div style={{
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '24px', padding: '48px 40px',
+          textAlign: 'center', maxWidth: '440px', width: '100%',
+          position: 'relative', overflow: 'hidden',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.4)'
+        }}>
+          <div style={{
+            position: 'absolute', top: 0, left: '10%', right: '10%', height: '2px',
+            background: 'linear-gradient(90deg, transparent, #10B981, transparent)'
+          }} />
+          <div style={{ fontSize: '64px', marginBottom: '16px' }}>🎉</div>
+          <h2 style={{ fontSize: '26px', fontWeight: 800, color: '#fff', marginBottom: '8px' }}>
+            Booking Confirmed!
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px', marginBottom: '32px' }}>
+            Your {product.name} will be delivered on {date}!
+          </p>
+          <Link to="/dashboard" style={{
+            background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
+            color: '#fff', padding: '12px 32px', borderRadius: '12px',
+            textDecoration: 'none', fontWeight: 700, fontSize: '14px',
+            boxShadow: '0 4px 20px rgba(59,130,246,0.4)'
+          }}>
             View My Bookings
           </Link>
         </div>
@@ -58,88 +88,172 @@ function Booking() {
     );
   }
 
+  const inputStyle = {
+    width: '100%', boxSizing: 'border-box',
+    background: 'rgba(255,255,255,0.06)',
+    border: '1.5px solid rgba(255,255,255,0.1)',
+    borderRadius: '10px', padding: '12px 16px',
+    fontSize: '14px', outline: 'none',
+    color: '#fff', transition: 'border-color 0.2s'
+  };
+
+  const labelStyle = {
+    display: 'block', fontWeight: 600, fontSize: '13px',
+    color: 'rgba(255,255,255,0.7)', marginBottom: '8px'
+  };
+
   return (
-    <div className="py-12 px-6 max-w-4xl mx-auto">
-      <Link to={`/products/${product.id}`} className="text-accent font-semibold mb-6 inline-block hover:underline">
-        ← Back to Product
-      </Link>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #0A0F1E 0%, #0F172A 100%)',
+      padding: '40px 20px 100px'
+    }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
 
-      <h1 className="text-3xl font-heading font-bold text-primary mb-8">Complete Your Booking</h1>
+        <Link to={`/products/${product.id}`} style={{
+          color: '#60A5FA', fontWeight: 600, textDecoration: 'none',
+          fontSize: '14px', display: 'inline-block', marginBottom: '24px'
+        }}>
+          ← Back to Product
+        </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        {/* Product Summary */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <img src={product.image} alt={product.name} className="w-full h-48 object-cover rounded-xl mb-4" />
-          <h3 className="text-xl font-heading font-bold text-primary mb-4">{product.name}</h3>
-          
-          {/* Tenure Selection */}
-          <p className="font-semibold text-dark mb-2">Select Tenure:</p>
-          <div className="flex gap-3 mb-4">
-            {[1, 3, 6, 12].map(t => (
+        <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#fff', marginBottom: '32px', letterSpacing: '-0.5px' }}>
+          Complete Your Booking
+        </h1>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }} className="booking-grid">
+
+          {/* Product Summary */}
+          <div style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '20px', padding: '24px',
+            position: 'relative', overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute', top: 0, left: '10%', right: '10%', height: '2px',
+              background: 'linear-gradient(90deg, transparent, #3B82F6, transparent)'
+            }} />
+
+            <img src={product.image} alt={product.name} style={{
+              width: '100%', height: '180px', objectFit: 'cover',
+              borderRadius: '12px', marginBottom: '16px',
+              border: '1px solid rgba(255,255,255,0.08)'
+            }} />
+
+            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '16px' }}>
+              {product.name}
+            </h3>
+
+            {/* Tenure */}
+            <p style={{ fontWeight: 600, fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>
+              Select Tenure:
+            </p>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+              {[1, 3, 6, 12].map(t => (
+                <button key={t} onClick={() => setTenure(t)} style={{
+                  padding: '8px 14px', borderRadius: '8px',
+                  fontWeight: 600, fontSize: '13px', cursor: 'pointer',
+                  border: 'none', transition: 'all 0.2s',
+                  background: tenure === t
+                    ? 'linear-gradient(135deg, #3B82F6, #2563EB)'
+                    : 'rgba(255,255,255,0.07)',
+                  color: tenure === t ? '#fff' : 'rgba(255,255,255,0.5)',
+                  boxShadow: tenure === t ? '0 2px 10px rgba(59,130,246,0.3)' : 'none'
+                }}>
+                  {t}M
+                </button>
+              ))}
+            </div>
+
+            {/* Price Summary */}
+            <div style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              borderRadius: '12px', padding: '16px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px' }}>Monthly Rent x {tenure}</span>
+                <span style={{ fontWeight: 600, color: '#fff', fontSize: '13px' }}>₹{product.price * tenure}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px' }}>Security Deposit</span>
+                <span style={{ fontWeight: 600, color: '#fff', fontSize: '13px' }}>₹{product.deposit}</span>
+              </div>
+              <div style={{
+                borderTop: '1px solid rgba(255,255,255,0.08)',
+                paddingTop: '12px',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+              }}>
+                <span style={{ fontWeight: 700, color: '#fff', fontSize: '14px' }}>Total Payable</span>
+                <span style={{ fontWeight: 800, color: '#60A5FA', fontSize: '22px' }}>₹{total}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Booking Form */}
+          <div style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '20px', padding: '24px',
+            position: 'relative', overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute', top: 0, left: '10%', right: '10%', height: '2px',
+              background: 'linear-gradient(90deg, transparent, #8B5CF6, transparent)'
+            }} />
+
+            <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#fff', marginBottom: '24px' }}>
+              Delivery Details
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+              <div>
+                <label style={labelStyle}>Delivery Address</label>
+                <textarea
+                  placeholder="Enter your full delivery address"
+                  value={address}
+                  onChange={e => setAddress(e.target.value)}
+                  style={{ ...inputStyle, height: '110px', resize: 'none' }}
+                  onFocus={e => e.target.style.borderColor = '#3B82F6'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>Delivery Date</label>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={e => setDate(e.target.value)}
+                  style={{ ...inputStyle, colorScheme: 'dark' }}
+                  onFocus={e => e.target.style.borderColor = '#3B82F6'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                />
+              </div>
               <button
-                key={t}
-                onClick={() => setTenure(t)}
-                className={`px-4 py-2 rounded-lg font-semibold transition ${
-                  tenure === t ? "bg-primary text-white" : "bg-background text-primary border border-primary"
-                }`}
+                onClick={handleBooking}
+                style={{
+                  background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
+                  color: '#fff', padding: '14px', borderRadius: '12px',
+                  border: 'none', fontWeight: 700, fontSize: '15px',
+                  cursor: 'pointer', marginTop: '8px',
+                  boxShadow: '0 4px 20px rgba(59,130,246,0.4)',
+                  transition: 'all 0.2s'
+                }}
               >
-                {t}M
+                Confirm Booking 🚀
               </button>
-            ))}
-          </div>
-
-          {/* Price Summary */}
-          <div className="bg-background rounded-xl p-4">
-            <div className="flex justify-between mb-2">
-              <span className="text-gray-500">Monthly Rent x {tenure}</span>
-              <span className="font-semibold">₹{product.price * tenure}</span>
             </div>
-            <div className="flex justify-between mb-2">
-              <span className="text-gray-500">Security Deposit</span>
-              <span className="font-semibold">₹{product.deposit}</span>
-            </div>
-            <div className="border-t pt-2 flex justify-between">
-              <span className="font-bold text-dark">Total Payable</span>
-              <span className="font-bold text-accent text-xl">₹{total}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Booking Form */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h3 className="text-xl font-heading font-bold text-primary mb-6">Delivery Details</h3>
-          
-          <div className="flex flex-col gap-5">
-            <div>
-              <label className="block text-dark font-semibold mb-2">Delivery Address</label>
-              <textarea
-                placeholder="Enter your full delivery address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 font-body focus:outline-none focus:border-primary h-28"
-              />
-            </div>
-
-            <div>
-              <label className="block text-dark font-semibold mb-2">Delivery Date</label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 font-body focus:outline-none focus:border-primary"
-              />
-            </div>
-
-            <button
-              onClick={handleBooking}
-              className="bg-accent text-white py-3 rounded-lg font-heading font-bold text-lg hover:opacity-90 transition"
-            >
-              Confirm Booking 🚀
-            </button>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .booking-grid { grid-template-columns: 1fr !important; }
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+      `}</style>
     </div>
   );
 }

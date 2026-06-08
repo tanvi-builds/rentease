@@ -16,13 +16,20 @@ function Checkout() {
 
   if (cart.length === 0 && !ordered) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-8xl mb-6">🛒</div>
-          <h2 className="text-3xl font-heading font-bold text-primary mb-4">Cart is Empty!</h2>
-          <Link to="/products" className="bg-accent text-white px-8 py-3 rounded-lg font-heading font-bold hover:opacity-90 transition">
-            Browse Products
-          </Link>
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0A0F1E 0%, #0F172A 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '80px', marginBottom: '24px' }}>🛒</div>
+          <h2 style={{ fontSize: '28px', fontWeight: 800, color: '#fff', marginBottom: '16px' }}>Cart is Empty!</h2>
+          <Link to="/products" style={{
+            background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
+            color: '#fff', padding: '12px 32px', borderRadius: '12px',
+            textDecoration: 'none', fontWeight: 700,
+            boxShadow: '0 4px 20px rgba(59,130,246,0.4)'
+          }}>Browse Products</Link>
         </div>
       </div>
     );
@@ -33,16 +40,13 @@ function Checkout() {
       alert('Please fill all details!');
       return;
     }
-
     const token = localStorage.getItem('rentease_token');
     if (!token) {
       alert('Please login first!');
       navigate('/login');
       return;
     }
-
     setLoading(true);
-
     try {
       const response = await fetch(`${API_URL}/api/orders`, {
         method: 'POST',
@@ -60,20 +64,11 @@ function Checkout() {
             quantity: item.quantity || 1
           })),
           totalAmount,
-          address: {
-            fullName: name,
-            phone: phone,
-            street: address,
-            city: '',
-            state: '',
-            pincode: ''
-          },
+          address: { fullName: name, phone, street: address, city: '', state: '', pincode: '' },
           paymentMethod: 'cod'
         })
       });
-
       const data = await response.json();
-
       if (data.success) {
         clearCart();
         setOrdered(true);
@@ -89,103 +84,189 @@ function Checkout() {
 
   if (ordered) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl shadow-xl p-10 text-center max-w-md">
-          <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-3xl font-heading font-bold text-primary mb-2">Order Confirmed!</h2>
-          <p className="text-gray-500 font-body mb-2">Thank you {name}!</p>
-          <p className="text-gray-500 font-body mb-6">Your items will be delivered on {date}!</p>
-          <div className="flex gap-4 justify-center">
-            <Link to="/dashboard" className="bg-primary text-white px-6 py-3 rounded-lg font-heading font-bold hover:opacity-90 transition">
-              View Dashboard
-            </Link>
-            <Link to="/products" className="bg-accent text-white px-6 py-3 rounded-lg font-heading font-bold hover:opacity-90 transition">
-              Shop More
-            </Link>
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0A0F1E 0%, #0F172A 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px'
+      }}>
+        <div style={{
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '24px', padding: '48px 40px',
+          textAlign: 'center', maxWidth: '440px', width: '100%',
+          position: 'relative', overflow: 'hidden',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.4)'
+        }}>
+          <div style={{
+            position: 'absolute', top: 0, left: '10%', right: '10%', height: '2px',
+            background: 'linear-gradient(90deg, transparent, #10B981, transparent)'
+          }} />
+          <div style={{ fontSize: '64px', marginBottom: '16px' }}>🎉</div>
+          <h2 style={{ fontSize: '26px', fontWeight: 800, color: '#fff', marginBottom: '8px' }}>
+            Order Confirmed!
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', marginBottom: '4px' }}>
+            Thank you {name}!
+          </p>
+          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', marginBottom: '32px' }}>
+            Your items will be delivered on {date}!
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <Link to="/dashboard" style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              color: '#fff', padding: '11px 24px', borderRadius: '10px',
+              textDecoration: 'none', fontWeight: 700, fontSize: '14px'
+            }}>View Dashboard</Link>
+            <Link to="/products" style={{
+              background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
+              color: '#fff', padding: '11px 24px', borderRadius: '10px',
+              textDecoration: 'none', fontWeight: 700, fontSize: '14px',
+              boxShadow: '0 4px 16px rgba(59,130,246,0.35)'
+            }}>Shop More</Link>
           </div>
         </div>
       </div>
     );
   }
 
+  const inputStyle = {
+    width: '100%', boxSizing: 'border-box',
+    background: 'rgba(255,255,255,0.06)',
+    border: '1.5px solid rgba(255,255,255,0.1)',
+    borderRadius: '10px', padding: '12px 16px',
+    fontSize: '14px', outline: 'none',
+    color: '#fff', transition: 'border-color 0.2s'
+  };
+
+  const labelStyle = {
+    display: 'block', fontWeight: 600, fontSize: '13px',
+    color: 'rgba(255,255,255,0.7)', marginBottom: '8px'
+  };
+
   return (
-    <div className="py-12 px-6 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-heading font-bold text-primary mb-8">Checkout 🚀</h1>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #0A0F1E 0%, #0F172A 100%)',
+      padding: '40px 20px 100px'
+    }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#fff', marginBottom: '32px', letterSpacing: '-0.5px' }}>
+          Checkout 🚀
+        </h1>
 
-        {/* Delivery Form */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h3 className="text-xl font-heading font-bold text-primary mb-6">Delivery Details</h3>
-          <div className="flex flex-col gap-5">
-            <div>
-              <label className="block text-dark font-semibold mb-2">Full Name</label>
-              <input
-                type="text"
-                placeholder="Enter your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 font-body focus:outline-none focus:border-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-dark font-semibold mb-2">Phone Number</label>
-              <input
-                type="tel"
-                placeholder="Enter your phone number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 font-body focus:outline-none focus:border-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-dark font-semibold mb-2">Delivery Address</label>
-              <textarea
-                placeholder="Enter your full address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 font-body focus:outline-none focus:border-primary h-28"
-              />
-            </div>
-            <div>
-              <label className="block text-dark font-semibold mb-2">Delivery Date</label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 font-body focus:outline-none focus:border-primary"
-              />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}
+          className="checkout-grid">
+
+          {/* Delivery Form */}
+          <div style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '20px', padding: '28px',
+            position: 'relative', overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute', top: 0, left: '10%', right: '10%', height: '2px',
+              background: 'linear-gradient(90deg, transparent, #3B82F6, transparent)'
+            }} />
+            <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#fff', marginBottom: '24px' }}>
+              Delivery Details
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+              <div>
+                <label style={labelStyle}>Full Name</label>
+                <input type="text" placeholder="Enter your name" value={name}
+                  onChange={e => setName(e.target.value)} style={inputStyle}
+                  onFocus={e => e.target.style.borderColor = '#3B82F6'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} />
+              </div>
+              <div>
+                <label style={labelStyle}>Phone Number</label>
+                <input type="tel" placeholder="Enter your phone number" value={phone}
+                  onChange={e => setPhone(e.target.value)} style={inputStyle}
+                  onFocus={e => e.target.style.borderColor = '#3B82F6'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} />
+              </div>
+              <div>
+                <label style={labelStyle}>Delivery Address</label>
+                <textarea placeholder="Enter your full address" value={address}
+                  onChange={e => setAddress(e.target.value)}
+                  style={{ ...inputStyle, height: '100px', resize: 'none' }}
+                  onFocus={e => e.target.style.borderColor = '#3B82F6'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} />
+              </div>
+              <div>
+                <label style={labelStyle}>Delivery Date</label>
+                <input type="date" value={date}
+                  onChange={e => setDate(e.target.value)}
+                  style={{ ...inputStyle, colorScheme: 'dark' }}
+                  onFocus={e => e.target.style.borderColor = '#3B82F6'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'} />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Order Summary */}
-        <div className="bg-white rounded-2xl shadow-md p-6 h-fit">
-          <h3 className="text-xl font-heading font-bold text-primary mb-6">Order Summary</h3>
-          {cart.map(item => (
-            <div key={item.id} className="flex justify-between mb-3">
-              <div>
-                <p className="font-semibold text-dark">{item.name}</p>
-                <p className="text-gray-400 text-sm">{item.tenure} month(s)</p>
-              </div>
-              <p className="font-bold text-accent">₹{item.price * item.tenure + item.deposit}</p>
+          {/* Order Summary */}
+          <div style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '20px', padding: '24px',
+            position: 'relative', overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute', top: 0, left: '10%', right: '10%', height: '2px',
+              background: 'linear-gradient(90deg, transparent, #3B82F6, transparent)'
+            }} />
+            <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#fff', marginBottom: '20px' }}>
+              Order Summary
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
+              {cart.map(item => (
+                <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <p style={{ fontWeight: 600, color: '#fff', fontSize: '14px', marginBottom: '2px' }}>{item.name}</p>
+                    <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '12px' }}>{item.tenure} month(s)</p>
+                  </div>
+                  <p style={{ fontWeight: 700, color: '#60A5FA', fontSize: '14px' }}>
+                    ₹{item.price * item.tenure + item.deposit}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-          <div className="border-t pt-4 mt-2">
-            <div className="flex justify-between mb-6">
-              <span className="font-bold text-dark text-lg">Total</span>
-              <span className="font-bold text-accent text-xl">₹{totalAmount}</span>
+            <div style={{
+              borderTop: '1px solid rgba(255,255,255,0.08)',
+              paddingTop: '16px', marginBottom: '20px',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+            }}>
+              <span style={{ fontWeight: 700, color: '#fff', fontSize: '15px' }}>Total</span>
+              <span style={{ fontWeight: 800, color: '#60A5FA', fontSize: '22px' }}>₹{totalAmount}</span>
             </div>
             <button
               onClick={handleOrder}
               disabled={loading}
-              className="w-full bg-accent text-white py-3 rounded-lg font-heading font-bold text-lg hover:opacity-90 transition"
+              style={{
+                width: '100%',
+                background: loading ? 'rgba(59,130,246,0.4)' : 'linear-gradient(135deg, #3B82F6, #2563EB)',
+                color: '#fff', padding: '14px', borderRadius: '12px', border: 'none',
+                fontWeight: 700, fontSize: '15px',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                boxShadow: loading ? 'none' : '0 4px 20px rgba(59,130,246,0.35)',
+                transition: 'all 0.2s'
+              }}
             >
               {loading ? 'Placing Order...' : 'Place Order 🎉'}
             </button>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .checkout-grid { grid-template-columns: 1fr !important; }
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+      `}</style>
     </div>
   );
 }
