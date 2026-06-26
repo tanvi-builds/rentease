@@ -38,6 +38,9 @@ app.use('/api/users', userRoutes);
 const paymentRoutes = require('./routes/payment');
 app.use('/api/payment', paymentRoutes);
 
+const productRoutes = require('./routes/products');
+app.use('/api/products', productRoutes);
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 5000,
@@ -50,3 +53,7 @@ mongoose.connect(process.env.MONGO_URI, {
     });
   })
   .catch((err) => console.log(err));
+  <head>
+
+  </head>
+    
